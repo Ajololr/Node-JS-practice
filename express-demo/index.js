@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
+
 const courses = [
   {
     id: 1,
@@ -31,6 +33,15 @@ app.get("/api/courses/:id", (req, res) => {
   const course = courses.find((item) => item.id === parseInt(req.params.id));
 
   if (!course) res.status(404).send("No course with the given id");
+  res.send(course);
+});
+
+app.post("/api/courses/", (req, res) => {
+  const course = {
+    id: courses.length + 1,
+    name: req.body.name,
+  };
+  courses.push(course);
   res.send(course);
 });
 
