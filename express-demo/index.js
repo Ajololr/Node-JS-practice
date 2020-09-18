@@ -22,6 +22,16 @@ const courses = [
   },
 ];
 
+function validateCourse(course) {
+  const schema = Joi.object({
+    name: Joi.string().min(3).required(),
+  });
+
+  const res = schema.validate(course);
+
+  return res;
+}
+
 app.get("/", (req, res) => {
   res.send("Hello World!!!");
 });
@@ -33,17 +43,15 @@ app.get("/api/courses", (req, res) => {
 app.get("/api/courses/:id", (req, res) => {
   const course = courses.find((item) => item.id === parseInt(req.params.id));
 
-  if (!course) res.status(404).send("No course with the given id");
+  if (!course) {
+    res.status(404).send("No course with the given id");
+    return;
+  }
   res.send(course);
 });
 
 app.post("/api/courses/", (req, res) => {
-  const schema = Joi.object({
-    name: Joi.string().min(3).required(),
-  });
-
-  const { error } = schema.validate(req.body);
-
+  const { error } = validateCourse(req.body);
   if (error) {
     res.status(400).send(error.message);
     return;
@@ -54,6 +62,24 @@ app.post("/api/courses/", (req, res) => {
     name: req.body.name,
   };
   courses.push(course);
+  res.send(course);
+});
+
+app.put("/api/courses/:id", (req, res) => {
+  const course = courses.find((item) => item.id === parseInt(req.params.id));
+
+  if (!course) {
+    res.status(404).send("No course with the given id");
+    return;
+  }
+
+  const { error } = validateCourse(req.body);
+  if (error) {
+    res.status(400).send(error.message);
+    return;
+  }
+
+  course.name = req.body.name;
   res.send(course);
 });
 
