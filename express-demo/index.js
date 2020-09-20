@@ -18,9 +18,12 @@ console.log("Mail password: " + config.get("mail.password"));
 if (app.get("env") === "development") {
   app.use(morgan("tiny"));
   startupDebugger("Morgan is enabled...");
+  dbDebugger("Set up DB...");
 }
 
-dbDebugger("Set up DB...");
+// Pug
+app.set("view engine", "pug");
+app.set("views", "./views"); // by default
 
 app.use(express.json());
 app.use(helmet());
@@ -52,7 +55,7 @@ function validateCourse(course) {
 }
 
 app.get("/", (req, res) => {
-  res.send("Hello World!!!");
+  res.render("index", { title: "My app", message: "Hello" });
 });
 
 app.get("/api/courses", (req, res) => {
