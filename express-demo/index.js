@@ -4,6 +4,9 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const config = require("config");
 
+const startupDebugger = require("debug")("app:startup");
+const dbDebugger = require("debug")("app:db");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -12,13 +15,15 @@ console.log("App name: " + config.get("name"));
 console.log("App mail server: " + config.get("mail.host"));
 console.log("Mail password: " + config.get("mail.password"));
 
-app.use(express.json());
-app.use(helmet());
-
 if (app.get("env") === "development") {
   app.use(morgan("tiny"));
-  console.log("Morgan is enabled...");
+  startupDebugger("Morgan is enabled...");
 }
+
+dbDebugger("Set up DB...");
+
+app.use(express.json());
+app.use(helmet());
 
 const courses = [
   {
