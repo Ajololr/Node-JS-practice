@@ -1,10 +1,18 @@
 const express = require("express");
 const Joi = require("joi");
+const morgan = require("morgan");
+const helmet = require("helmet");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(helmet());
+
+if (app.get("env") === "development") {
+  app.use(morgan("tiny"));
+  console.log("Morgan is enabled...");
+}
 
 const courses = [
   {
