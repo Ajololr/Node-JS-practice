@@ -2,9 +2,15 @@ const express = require("express");
 const Joi = require("joi");
 const morgan = require("morgan");
 const helmet = require("helmet");
+const config = require("config");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Configuration
+console.log("App name: " + config.get("name"));
+console.log("App mail server: " + config.get("mail.host"));
+console.log("Mail password: " + config.get("mail.password"));
 
 app.use(express.json());
 app.use(helmet());
