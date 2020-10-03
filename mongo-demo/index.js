@@ -70,3 +70,10 @@ const updateCourse = async (id) => {
   const result = await course.save();
   console.log(result);
 };
+
+const removeCourse = async (id) => {
+  const result = await Course.deleteOne({ _id: id });
+  // const result = await Course.deleteMany({ _id: id });\
+  // const result = await Course.findByIdAndRemove(id);
+  console.log(result);
+};
