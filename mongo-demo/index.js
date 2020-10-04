@@ -6,11 +6,42 @@ mongoose
   .catch((err) => console.log("Could not connect ro mongodb: " + err.message));
 
 const courseSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 25,
+  },
+  cathegory: {
+    type: String,
+    required: true,
+    enum: ["web", "mobile", "network"],
+    lowercase: true,
+    trim: true,
+  },
+  tags: {
+    type: Array,
+    validate: {
+      validator: function (v) {
+        return v && v.length > 0;
+      },
+      message: "A course must have at least 1 tag",
+    },
+  },
   author: String,
-  tags: [String],
-  date: { type: Date, default: Date.now },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
   isPublished: Boolean,
+  price: {
+    type: Number,
+    required: function () {
+      return this.isPublished;
+    },
+    min: 0,
+    max: 200,
+  },
 });
 
 const Course = mongoose.model("Course", courseSchema);
@@ -19,13 +50,23 @@ const createCourse = async () => {
   const course = new Course({
     name: "React JS course",
     author: "Ilya Androsov",
-    tags: ["ract", "frontend"],
+    cathegory: "-",
+    tags: [],
     isPublished: true,
+    price: 20,
   });
 
-  const result = await course.save();
-  console.log(result);
+  try {
+    const result = await course.save();
+    console.log(result);
+  } catch (ex) {
+    for (let field in ex.errors) {
+      console.log(ex.errors[field].message);
+    }
+  }
 };
+
+createCourse();
 
 const getCourses = async () => {
   // eq
@@ -55,8 +96,6 @@ const getCourses = async () => {
     .select({ name: 1, tags: 1 });
   console.log(courses);
 };
-
-getCourses();
 
 const updateCourse = async (id) => {
   const course = await Course.findById(id);
