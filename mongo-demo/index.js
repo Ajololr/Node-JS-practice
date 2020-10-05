@@ -5,6 +5,10 @@ mongoose
   .then(() => console.log("Connected to MongoDB..."))
   .catch((err) => console.log("Could not connect ro mongodb: " + err.message));
 
+const subSchema = new mongoose.Schema({
+  name: String,
+});
+
 const courseSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -44,6 +48,9 @@ const courseSchema = new mongoose.Schema({
     },
     min: 0,
     max: 200,
+  },
+  subs: {
+    type: [subSchema],
   },
 });
 
@@ -121,3 +128,16 @@ const removeCourse = async (id) => {
   // const result = await Course.findByIdAndRemove(id);
   console.log(result);
 };
+
+async function addAuthor(courseId, author) {
+  const course = await Course.findById(courseId);
+  course.authors.push(author);
+  course.save();
+}
+
+async function removeAuthor(courseId, authorId) {
+  const course = await Course.findById(courseId);
+  const author = course.authors.id(authorId);
+  author.remove();
+  course.save();
+}
