@@ -28,7 +28,10 @@ const courseSchema = new mongoose.Schema({
       message: "A course must have at least 1 tag",
     },
   },
-  author: String,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Author",
+  },
   date: {
     type: Date,
     default: Date.now,
@@ -90,6 +93,8 @@ const getCourses = async () => {
     // .find({ price: { $ind: [ 10, 15, 20 ] } })
     // .or([{ author: "Ilya Androsov" }, { isPublished: true }])
     // .count()
+    // .populate("author", "name -_id")
+    // .populate("category", "name")
     .skip((pageNumber - 1) * pageSize)
     .limit(pageSize)
     .sort({ name: 1 })
