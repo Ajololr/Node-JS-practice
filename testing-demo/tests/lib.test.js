@@ -16,3 +16,10 @@ describe("absolute", () => {
     expect(res).toBe(0);
   });
 });
+
+describe("greet", () => {
+  it("should return the greeting message", () => {
+    let res = lib.greet("Ilya");
+    expect(res).toContain("Ilya");
+  });
+});
