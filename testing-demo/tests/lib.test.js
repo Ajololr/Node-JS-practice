@@ -23,3 +23,10 @@ describe("greet", () => {
     expect(res).toContain("Ilya");
   });
 });
+
+describe("getCurrencies", () => {
+  it("should return the array of currencies", () => {
+    let res = lib.getCurrencies();
+    expect(res).toEqual(expect.arrayContaining(["EUR", "USD", "RUB"]));
+  });
+});
